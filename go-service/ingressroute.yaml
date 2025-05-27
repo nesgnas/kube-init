@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: go-application
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`api3.nesgnas.uk`)
+      kind: Rule
+      services:
+        - kind: Service
+          name: gin-api-service
+          namespace: default
+          port: 9000
+  tls:
+    certResolver: letsencrypt-prod

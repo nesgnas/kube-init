@@ -1,0 +1,40 @@
+additionalArguments:
+  - "--certificatesresolvers.letsencrypt-prod.acme.httpchallenge=true"
+  - "--certificatesresolvers.letsencrypt-prod.acme.httpchallenge.entrypoint=web"
+  - "--certificatesresolvers.letsencrypt-prod.acme.email=nesgnas@gmail.com"
+  - "--certificatesresolvers.letsencrypt-prod.acme.storage=/data/acme.json"
+  - "--api.insecure=true"
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+ports:
+  web:
+    port: 80
+    expose:
+      default: true
+    exposedPort: 80
+    protocol: TCP
+  websecure:
+    port: 443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+
+deployment:
+  enabled: true
+
+persistence:
+  enabled: true
+  existingClaim: traefik
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  storageClass: "local-path"
